@@ -1,0 +1,34 @@
+{{> head.hbs}}
+
+<div class="container">
+    <h1>Blog Posts</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Content</th>
+            <th>&nbsp;</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each posts}}
+            <tr>
+                <td>{{content.title}}</td>
+                <td>{{content.author}}</td>
+                <td>{{content.body}}</td>
+                <td>
+                    <form class="form-inline input-prepend" action="/posts/{{id}}/delete" method="POST">
+                        <a class="btn" href="/posts/{{id}}">Show</a>
+                        <a class="btn" href="/posts/{{id}}/edit">Edit</a>
+                        <button class="btn">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+    <a class="btn" href="/posts/new">New Post</a>
+</div>
+
+{{> footer.hbs}}

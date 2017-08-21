@@ -1,0 +1,39 @@
+{{> head.hbs}}
+
+<div class="container">
+    <h1>New blog post</h1>
+    <form action="/posts/{{id}}/add" method="POST">
+        <fieldset>
+            <div class="clearfix  " id="author_field">
+                <label for="author">Author</label>
+                <div class="input">
+                    <input type="text" id="author" name="author" value="" autofocus="autofocus" required="required">
+                    <span class="help-inline"></span>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="clearfix" id="title_field">
+                <label for="title">Title</label>
+                <div class="input">
+                    <input type="text" id="title" name="title" value="" size="80">
+                    <span class="help-inline"></span>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+            <div class="clearfix  " id="body_field">
+                <label for="body">Content</label>
+                <div class="input">
+                    <textarea id="body" name="body" cols="80" rows="10"></textarea>
+                    <span class="help-inline"></span>
+                    <span class="help-block"></span>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <button class="btn btn-primary">Add</button>
+            <a class="btn" href="/">Cancel</a>
+        </fieldset>
+    </form>
+</div>
+
+{{> footer.hbs}}
