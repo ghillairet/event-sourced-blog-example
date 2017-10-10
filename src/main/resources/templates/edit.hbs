@@ -2,7 +2,7 @@
 
 <div class="container">
     <h1>Edit blog post</h1>
-    <form action="/posts/{{post.id}}/edit" method="POST">
+    <form action="/posts/{{post.id}}/edit?r={{post.revision.value}}" method="POST">
         <fieldset>
             <div class="clearfix" id="author_field">
                 <label for="author">Author</label>

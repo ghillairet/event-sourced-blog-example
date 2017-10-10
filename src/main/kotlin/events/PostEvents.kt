@@ -3,7 +3,7 @@ package events
 import org.funktionale.option.Option
 import java.util.*
 
-data class PostId(val uuid: UUID) {
+data class PostId(private val uuid: UUID) {
     override fun toString(): String {
         return uuid.toString()
     }

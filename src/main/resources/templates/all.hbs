@@ -18,7 +18,8 @@
                 <td>{{content.author}}</td>
                 <td>{{content.body}}</td>
                 <td>
-                    <form class="form-inline input-prepend" action="/posts/{{id}}/delete" method="POST">
+                    <form class="form-inline input-prepend" action="/posts/{{id}}/delete?r={{revision.value}}"
+                          method="POST">
                         <a class="btn" href="/posts/{{id}}">Show</a>
                         <a class="btn" href="/posts/{{id}}/edit">Edit</a>
                         <button class="btn">Delete</button>
