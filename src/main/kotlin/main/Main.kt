@@ -1,5 +1,6 @@
 package main
 
+import controllers.Global
 import controllers.PostsController
 import events.PostContent
 import events.PostId
@@ -19,11 +20,6 @@ fun Response.invalid() = {
     redirect("/")
 }
 
-fun Response.ok(path: String) = {
-    status(200)
-    redirect(path)
-}
-
 typealias PostContentForm = Either<Exception, PostContent>
 
 fun Request.postContentForm(): PostContentForm =
@@ -39,7 +35,7 @@ fun Request.postContentForm(): PostContentForm =
 
 fun main(args: Array<String>) {
 
-    val controller = PostsController.get()
+    val controller = PostsController.get(Global.redis)
 
     fun Request.postId(): Option<PostId> = fromString(this.params(":id"))
     fun Request.streamRevision(): Option<StreamRevision> = try {
@@ -91,14 +87,14 @@ fun main(args: Array<String>) {
         })
     })
     post("/posts/:id/edit", { req, resp ->
-        req.idAndRevision().fold({ resp.invalid() }, { (id, revision) ->
-            controller.edit(id, revision, req.postContentForm(), { result ->
-                result.fold({
-                    resp.redirect("/", Redirect.Status.NOT_MODIFIED.intValue())
-                }, {
-                    resp.redirect("/", Redirect.Status.FOUND.intValue())
+        req.idAndRevision().fold(
+                { resp.invalid() },
+                { (id, revision) ->
+                    controller.edit(id, revision, req.postContentForm(), {
+                        it.fold(
+                                { resp.redirect("/", Redirect.Status.NOT_MODIFIED.intValue()) },
+                                { resp.redirect("/", Redirect.Status.FOUND.intValue()) })
+                    })
                 })
-            })
-        })
     })
 }

@@ -9,18 +9,13 @@ import main.PostContentForm
 import models.Post
 import models.Posts
 import org.funktionale.option.Option
-import org.slf4j.LoggerFactory
 import spark.ModelAndView
 import spark.template.handlebars.HandlebarsTemplateEngine
 
 class PostsController(private val memoryImage: MemoryImage<Posts, PostEvent>) {
 
-    private val LOGGER = LoggerFactory.getLogger(PostsController::class.java)
-
     companion object {
-        fun get() = PostsController(MemoryImage(FakeEventStore(), Posts(), { posts, commit ->
-            posts.updateMany(commit.eventsWithRevision())
-        }))
+        fun get(image: MemoryImage<Posts, PostEvent>) = PostsController(image)
     }
 
     fun posts(): Posts = memoryImage.get()

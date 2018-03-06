@@ -21,7 +21,7 @@ data class Posts(val byId: Map<PostId, Post> = emptyMap(), private val orderedBy
     }
 
     fun updateMany(events: List<Pair<PostEvent, StreamRevision>>): Posts =
-            events.fold(this, { acc, (event, revision) -> acc.update(event, revision) })
+            events.fold(this, { posts, e -> posts.update(e.first, e.second) })
 
     companion object {
         fun fromHistory(events: List<Pair<PostEvent, StreamRevision>>): Posts

@@ -1,12 +1,13 @@
 package events
 
+import com.fasterxml.jackson.annotation.JsonValue
 import org.funktionale.option.Option
 import java.util.*
 
 data class PostId(private val uuid: UUID) {
-    override fun toString(): String {
-        return uuid.toString()
-    }
+    @JsonValue
+    override fun toString(): String = uuid.toString()
+
     companion object {
         fun generate(): PostId = PostId(UUID.randomUUID())
         fun fromString(id: String?): Option<PostId> =
