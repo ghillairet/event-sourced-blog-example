@@ -19,11 +19,6 @@ fun Response.invalid() = {
     redirect("/")
 }
 
-fun Response.ok(path: String) = {
-    status(200)
-    redirect(path)
-}
-
 typealias PostContentForm = Either<Exception, PostContent>
 
 fun Request.postContentForm(): PostContentForm =
