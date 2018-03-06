@@ -1,5 +1,6 @@
 package main
 
+import com.google.common.util.concurrent.Atomics
 import events.*
 import events.PostId.Companion.fromString
 import models.Post
@@ -43,19 +44,15 @@ fun fromRequest(req: Request): PostContent = PostContent(
 
 fun main(args: Array<String>) {
 
-    val lock = Object()
-
-    var posts = fromHistory(
+    val posts = Atomics.newReference(fromHistory(
             PostAdded(PostId.generate(), PostContent("Mark", "The power of feedback in Scrum", "Searching the web for ...")),
             PostAdded(PostId.generate(), PostContent("Erik", "Picking the right abstraction", "Recently I had to ...")),
-            PostAdded(PostId.generate(), PostContent("Michael", "Architect in Scrum", "Last friday I gave ...")))
+            PostAdded(PostId.generate(), PostContent("Michael", "Architect in Scrum", "Last friday I gave ..."))))
 
     fun Request.postId(): Option<PostId> = fromString(this.params(":id"))
 
     fun Response.success(event: PostEvent) {
-        synchronized(lock) {
-            posts = posts.apply(event)
-        }
+        posts.set(posts.get().apply(event))
 
         this.status(201)
         this.redirect("/")
@@ -67,7 +64,7 @@ fun main(args: Array<String>) {
     }
 
     fun render(extractor: (Post) -> Map<String, Any>): (Option<PostId>, String) -> ModelAndView = { id, view ->
-        val post = id.flatMap { posts.get(id.get()) }
+        val post = id.flatMap { posts.get().get(id.get()) }
         when (post) {
             is Option.Some<Post> -> ModelAndView(extractor(post.get()), view)
             else -> ModelAndView(emptyMap<String, Any>(), "error.hbs")
@@ -77,7 +74,7 @@ fun main(args: Array<String>) {
     val renderPost = render({ post -> mapOf("post" to post) })
 
     get("/", { _, _ ->
-        ModelAndView(mapOf("posts" to posts.mostRecent(20)), "all.hbs")
+        ModelAndView(mapOf("posts" to posts.get().mostRecent(20)), "all.hbs")
     }, HandlebarsTemplateEngine())
 
     get("/posts/new", { _, _ ->
